@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const devMode = process.env.NODE_ENV !== 'production'
@@ -14,20 +15,29 @@ let cleanOptions = {
 module.exports = {
 
 	entry: {
-		'js/app': './src/js/app.js'
+		'js/app': './src/js/app'
 	},
 
 	output: {
 		filename: '[name].js',
 		path: path.resolve(__dirname, 'public')
 	},
+	resolve: {
+    	extensions: ['.mjs', '.js']
+  	},
+
 	plugins: [
 		new CleanWebpackPlugin(['public'], cleanOptions),
 
 	    new MiniCssExtractPlugin({
 	      filename: "./css/app.css",
 	      chunkFilename: "[id].css"
-    	})
+    	}),
+
+    	new webpack.ProvidePlugin({
+		  React: 'react',
+		  ReactDOM: 'react-dom'
+		})
  	],
 
 	module: {
@@ -47,9 +57,20 @@ module.exports = {
 			},
 			{
         		test: /\.(png|svg|jpg|gif)$/,
-	         	use: [
-	           		'file-loader',
-	         	]
+	         	use: {
+
+	         		loader: 'file-loader',
+		         	options: {
+					    name (file) {
+					      if (devMode) {
+					        return '[name].[ext]'
+					      }
+					 
+					      return '[hash].[ext]'
+					    },
+					    outputPath: 'images/'
+					 }  
+				}
 	       	}
 
 		]

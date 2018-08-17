@@ -1,3 +1,48 @@
 body {
   background: #eee; }
 
+svg {
+  width: 50px;
+  height: 50px; }
+
+.row {
+  display: flex;
+  flex-direction: row;
+  width: 100%; }
+
+.tile {
+  height: 50px;
+  width: 50px; }
+
+.row:nth-child(2n+1) .tile:nth-child(2n+1) {
+  background: #b58763; }
+
+.row:nth-child(2n+1) .tile:nth-child(2n) {
+  background: #f0dab5; }
+
+.row:nth-child(2n) .tile:nth-child(2n) {
+  background: #b58763; }
+
+.row:nth-child(2n) .tile:nth-child(2n+1) {
+  background: #f0dab5; }
+
+.chess-board {
+  width: 400px;
+  height: 400px;
+  background: aliceblue;
+  display: flex;
+  flex-direction: column; }
+
+.chess-game {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column; }
+
+.piece {
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+
