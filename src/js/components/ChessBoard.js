@@ -25,7 +25,7 @@ export default class ChessBoard extends React.Component {
 
 								return (
 
-									<Tile key = {tileIndex} id = {tileIndex} piece = {el}/>
+									<Tile key = {tileIndex} id = {tileIndex} display = {this.props.posTiles.has(tileIndex)} piece = {el} clickHandler={this.props.clickHandler}/>
 
 								)
 

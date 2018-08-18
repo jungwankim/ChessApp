@@ -1,61 +1,141 @@
+import {initBoard, initTestBoard} from '../util/helper'
+import {getValidMoves} from '../util/move'
 import ChessBoard from './ChessBoard';
 
 export default class ChessGame extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {
-			board : {
-				 A : ['w@rock1', 'w@bishop1', 'w@knight1', 'w@queen1', 'w@king1', 'w@knight2', 'w@bishop2', 'w@rock2'],
-				 B : ['w@pawn1', 'w@pawn2', 'w@pawn3', 'w@pawn4', 'w@pawn5', 'w@pawn6', 'w@pawn7', 'w@pawn8'],
-				 C : new Array(8).fill(null),
-				 D : new Array(8).fill(null),
-				 E : new Array(8).fill(null),
-				 F : new Array(8).fill(null),
-				 G : ['b@pawn1', 'b@pawn2', 'b@pawn3', 'b@pawn4', 'b@pawn5', 'b@pawn6', 'b@pawn7', 'b@pawn8'],
-				 H : ['b@rock1', 'b@bishop1', 'b@knight1', 'b@queen1', 'b@king1', 'b@knight2', 'b@bishop2', 'b@rock2'],
-			},
-			whitePieceOnBoard : {
-				rock1: { loc : "A1", type: "rock"},
-				rock2: { loc : "H1", type: "rock"},
-				knight1: { loc: "B1", type: "knight"},
-				knight2: { loc: "G1", type: "knight"},
-				bishop1: { loc: "C1", type: "bishop"},
-				bishop2: { loc: "F1", type: "bishop"},
-				queen1: { loc: "D1", type: "queen"},
-				king1: { loc: "E1", type: "king"},
-				pawn1: { loc : "A2", type: "pawn"},
-				pawn2: { loc : "B2", type: "pawn"},
-				pawn3: { loc: "C2", type: "pawn"},
-				pawn4: { loc: "D2", type: "pawn"},
-				pawn5: { loc: "E2", type: "pawn"},
-				pawn6: { loc: "F2", type: "pawn"},
-				pawn7: { loc: "G2", type: "pawn"},
-				pawn8: { loc: "H2", type: "pawn"}
-			},
-
-			blackPieceOnBoard : {
-				rock1: { loc : "A8", type: "rock"},
-				rock2: { loc : "H8", type: "rock"},
-				knight1: { loc: "B8", type: "knight"},
-				knight2: { loc: "G8", type: "knight"},
-				bishop1: { loc: "C8", type: "bishop"},
-				bishop2: { loc: "F8", type: "bishop"},
-				queen1: { loc: "D8", type: "queen"},
-				king1: { loc: "E8", type: "king"},
-				pawn1: { loc : "A7", type: "pawn"},
-				pawn2: { loc : "B7", type: "pawn"},
-				pawn3: { loc: "C7", type: "pawn"},
-				pawn4: { loc: "D7", type: "pawn"},
-				pawn5: { loc: "E7", type: "pawn"},
-				pawn6: { loc: "F7", type: "pawn"},
-				pawn7: { loc: "G7", type: "pawn"},
-				pawn8: { loc: "H7", type: "pawn"}
-			},
-
-			isWhiteTurn: true,
-		};
+		this.state = initBoard();
+		this.clickHandler = this.clickHandler.bind(this);
+		this.movePiece = this.movePiece.bind(this);
+		this.addPiece = this.addPiece.bind(this);
+		this.removePiece = this.removePiece.bind(this);
 		
+	}
+
+	removePiece(row, col, player) {
+		
+		
+	}
+
+	addPiece(row, col, piece) {
+		let  newRow = {
+			[row]: [...this.state.board[row].slice(0,col-1) , piece , ...this.state.board[row].slice(col)]
+		}
+		this.setState( {
+			board: Object.assign({}, this.state.board, newRow)
+		})
+	}
+
+	movePiece(pre_row, pre_col, new_row, new_col, piece) {
+		let pre = {[pre_row]: [...this.state.board[pre_row].slice(0,pre_col-1) ,  null, ...this.state.board[pre_row].slice(pre_col)]};
+		this.setState( {
+			board: Object.assign({}, this.state.board, pre)
+		},
+			() => {
+				this.addPiece(new_row, new_col, piece);
+			}
+		)
+		
+		let [player, type] = piece.split('@');
+		if (player == 'w') {
+			this.setState({ 
+				whitePieceOnBoard: Object.assign({}, 
+					this.state.whitePieceOnBoard, 
+					{ [type] : Object.assign({}, 
+						this.state.whitePieceOnBoard[type], { loc: new_row+new_col}
+						) 
+					}
+				)
+			})
+		}
+		else if (player == 'b') {
+			this.setState({ 
+				blackPieceOnBoard: Object.assign({}, 
+					this.state.whitePieceOnBoard, 
+					{ [type] : Object.assign({}, 
+						this.state.blackPieceOnBoard[type], { loc: new_row+new_col}
+						) 
+					}
+				)
+			})
+		}
+		else {
+			console.log("something went wrong");
+		}
+	}
+
+	clickHandler () {
+		return (
+			{
+				tileClick : (tile_id) => {
+
+					if (this.state.selectedPiece) {
+						//check valid move by looking at posTiles => if yes move the piece and update, if not set selected and posTiles to null
+						if (this.state.posTiles.has(tile_id)) {
+							
+							let pre_row = this.state.selectedPiece.loc[0];
+							let pre_col = parseInt(this.state.selectedPiece.loc[1]);
+
+							let next_row = tile_id[0];
+							let next_col = parseInt(tile_id[1]);
+							this.movePiece(pre_row, pre_col, next_row, next_col, this.state.selectedPiece.id);												
+						}
+
+						this.setState({ selectedPiece : null});
+						this.setState({ posTiles : new Set()});
+					}
+					else {
+						//do nothing
+					}
+
+				},
+
+				//piece {player, piece}
+				pieceClick : (e, piece) =>{
+
+					e.stopPropagation();
+  					e.nativeEvent.stopImmediatePropagation();;
+
+					let selected = null;
+					if (piece.player === 'w') {
+						selected = this.state.whitePieceOnBoard[piece.piece];
+					}
+					else {
+						selected = this.state.blackPieceOnBoard[piece.piece];
+					}
+
+					if (this.state.selectedPiece) {
+						//clicked alley
+						if(piece.player == 'w' && this.state.isWhiteTurn) {
+							this.setState({ selectedPiece : selected});
+							this.setState({ posTiles : getValidMoves(selected.loc, selected.type, this.state.isWhiteTurn)});
+						}
+						//clicked enemy 
+						else {
+							if (this.state.posTiles.has(selected.loc)) {
+
+
+							}
+							
+							let pre_row = this.state.selectedPiece.loc[0];
+							let pre_col = parseInt(this.state.selectedPiece.loc[1]);
+
+							let next_row = tile_id[0];
+							let next_col = parseInt(tile_id[1]);
+							this.movePiece(pre_row, pre_col, next_row, next_col, this.state.selectedPiece.id);
+						}
+					}
+					else {
+						//set selectedPiece and get possible movement and store in posTiles and change tile color by adding class.
+						this.setState({ selectedPiece : selected});
+						this.setState({ posTiles : getValidMoves(selected.loc, selected.type, piece.player)});
+					}
+				}
+
+			}
+		)
 	}
 
 	render() {
@@ -63,7 +143,7 @@ export default class ChessGame extends React.Component {
 		return (
 			<div className="chess-game">
 				<h1>Chess App</h1>
-				<ChessBoard board = {this.state.board}>
+				<ChessBoard board = {this.state.board} posTiles={this.state.posTiles} clickHandler = {this.clickHandler()}>
 
 				</ChessBoard>
 				<h3>Current Turn: { this.state.isWhiteTurn ? 'white' : 'black' }</h3>

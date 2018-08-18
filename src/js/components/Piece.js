@@ -45,7 +45,7 @@ export default class Piece extends React.Component {
 
 	render() {
 		return (
-			<div className="piece">
+			<div className="piece" onClick={ (e) => {this.props.clickHandle(e, this.props)}}>
 				{this.renderPiece(this.props.player, this.props.piece)}
 			</div>
 		);
