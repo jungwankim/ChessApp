@@ -155,6 +155,7 @@ export default class ChessGame extends React.Component {
 							return
 						}
 						//set selectedPiece as pickedPiece and get validMoves
+						console.log(pickedPiece);
 						this.setState({ selectedPiece : pickedPiece});
 						this.setState({ posTiles : getValidMoves(pickedPiece.loc, pickedPiece.type, piece.player, this.state.board)});
   					}
