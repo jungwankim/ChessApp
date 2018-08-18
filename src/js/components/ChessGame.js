@@ -53,7 +53,7 @@ export default class ChessGame extends React.Component {
 		else if (player == 'b') {
 			this.setState({ 
 				blackPieceOnBoard: Object.assign({}, 
-					this.state.whitePieceOnBoard, 
+					this.state.blackPieceOnBoard, 
 					{ [type] : Object.assign({}, 
 						this.state.blackPieceOnBoard[type], { loc: new_row+new_col}
 						) 
@@ -66,72 +66,98 @@ export default class ChessGame extends React.Component {
 		}
 	}
 
+	resetPiece() {
+		this.setState({ selectedPiece : null});
+		this.setState({ posTiles : new Set()});
+	}
+
 	clickHandler () {
 		return (
 			{
 				tileClick : (tile_id) => {
-
-					if (this.state.selectedPiece) {
+					let selectedPiece = this.state.selectedPiece;
+					// piece is selected so move piece to selected tile
+					if (selectedPiece) {
 						//check valid move by looking at posTiles => if yes move the piece and update, if not set selected and posTiles to null
 						if (this.state.posTiles.has(tile_id)) {
 							
-							let pre_row = this.state.selectedPiece.loc[0];
-							let pre_col = parseInt(this.state.selectedPiece.loc[1]);
+							let pre_row = selectedPiece.loc[0];
+							let pre_col = parseInt(selectedPiece.loc[1]);
 
 							let next_row = tile_id[0];
 							let next_col = parseInt(tile_id[1]);
-							this.movePiece(pre_row, pre_col, next_row, next_col, this.state.selectedPiece.id);												
+							this.movePiece(pre_row, pre_col, next_row, next_col, selectedPiece.id);
+							this.setState({ isWhiteTurn : !this.state.isWhiteTurn});
+							this.resetPiece();			
 						}
-
-						this.setState({ selectedPiece : null});
-						this.setState({ posTiles : new Set()});
+						//invalide move, two choice 1. reset , 2. do nothing
+						else {
+							this.resetPiece();
+						}
 					}
+					// piece is not selected, so do nothing
 					else {
-						//do nothing
+						return
 					}
 
 				},
 
 				//piece {player, piece}
 				pieceClick : (e, piece) =>{
-
 					e.stopPropagation();
   					e.nativeEvent.stopImmediatePropagation();;
-
-					let selected = null;
-					if (piece.player === 'w') {
-						selected = this.state.whitePieceOnBoard[piece.piece];
-					}
-					else {
-						selected = this.state.blackPieceOnBoard[piece.piece];
-					}
-
-					if (this.state.selectedPiece) {
-						//clicked alley
-						if(piece.player == 'w' && this.state.isWhiteTurn) {
-							this.setState({ selectedPiece : selected});
-							this.setState({ posTiles : getValidMoves(selected.loc, selected.type, this.state.isWhiteTurn)});
+  					let pickedPiece = piece.player == 'w' ? this.state.whitePieceOnBoard[piece.piece] : this.state.blackPieceOnBoard[piece.piece];
+  					let selectedPiece = this.state.selectedPiece;
+  			
+  					//check if it is second pick 
+  					if (selectedPiece) {
+  						//(piece is white and turn is white) or (piece is black and turn is black), then change current piece or castling
+  						if((piece.player == 'w' && this.state.isWhiteTurn) || (piece.player === 'b' && !this.state.isWhiteTurn)) {
+							this.setState({ selectedPiece : pickedPiece});
+							this.setState({ posTiles : getValidMoves(pickedPiece.loc, pickedPiece.type,  piece.player, this.state.board)});
 						}
-						//clicked enemy 
+						//attack move
 						else {
-							if (this.state.posTiles.has(selected.loc)) {
+							let attackedPiece = this.state.isWhiteTurn ? this.state.blackPieceOnBoard[piece.piece] : this.state.whitePieceOnBoard[piece.piece];
 
+							//possible move
+							if (this.state.posTiles.has(attackedPiece.loc)) {
+								console.log(attackedPiece.loc);
+								let next_row = attackedPiece.loc[0];
+								let next_col = parseInt(attackedPiece.loc[1]);
 
+								let pre_row = selectedPiece.loc[0];
+								let pre_col = parseInt(selectedPiece.loc[1]);
+								this.movePiece(pre_row, pre_col, next_row, next_col, selectedPiece.id);
+								//next turn
+								this.setState({ isWhiteTurn : !this.state.isWhiteTurn});
+								this.resetPiece();
 							}
-							
-							let pre_row = this.state.selectedPiece.loc[0];
-							let pre_col = parseInt(this.state.selectedPiece.loc[1]);
-
-							let next_row = tile_id[0];
-							let next_col = parseInt(tile_id[1]);
-							this.movePiece(pre_row, pre_col, next_row, next_col, this.state.selectedPiece.id);
+							//impossible move, reset
+							else {
+								this.resetPiece();
+							}
 						}
-					}
-					else {
-						//set selectedPiece and get possible movement and store in posTiles and change tile color by adding class.
-						this.setState({ selectedPiece : selected});
-						this.setState({ posTiles : getValidMoves(selected.loc, selected.type, piece.player)});
-					}
+  					}
+  					//first pick
+  					else {
+  						//piece is white and turn is white, then set
+  						if (piece.player === 'w' && this.state.isWhiteTurn) {
+							pickedPiece = this.state.whitePieceOnBoard[piece.piece];
+						}
+						//piece is black and turn is black, then set
+						else if (piece.player === 'b' && !this.state.isWhiteTurn) {
+							pickedPiece = this.state.blackPieceOnBoard[piece.piece];
+						}
+						// wrong piece is selected, reset
+						else {
+							this.resetPiece();
+							return
+						}
+						//set selectedPiece as pickedPiece and get validMoves
+						this.setState({ selectedPiece : pickedPiece});
+						this.setState({ posTiles : getValidMoves(pickedPiece.loc, pickedPiece.type, piece.player, this.state.board)});
+  					}
 				}
 
 			}
