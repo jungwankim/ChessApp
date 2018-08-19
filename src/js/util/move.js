@@ -14,6 +14,26 @@ function getPreRow(character) {
 //check same piece => stop
 //check null => add then next
 
+function isVaildTile(row, col, board, isWhite) {
+
+	if (board[row][col] === undefined) {
+		return false;
+	}
+	else if (board[row][col] !== null) {
+		if (board[row][col][0] === 'b' && isWhite) {
+			return true;
+		}
+		else if (board[row][col][0] === 'w' && !isWhite) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		return true;
+	}
+}
 
 function pawnValidMoves(loc, isWhite, board) {
 	let validMove = new Set();
@@ -97,34 +117,35 @@ function knightValidMove(loc, isWhite, board) {
 	let rightRow2 = getNextRow(rightRow);
 		//check front
 	if (leftRow) {
-		if (board[leftRow][currentCol + 1] !== undefined) {
-		validMove.add(leftRow + (currentCol + 2));
+		if(isVaildTile(leftRow, (currentCol + 1), board, isWhite)) {
+			validMove.add(leftRow + (currentCol + 2));
 		}
-		if (board[leftRow][currentCol - 3] !== undefined) {
+		if(isVaildTile(leftRow, (currentCol - 3), board, isWhite)) {
 			validMove.add(leftRow + (currentCol - 2));
 		}
 	}
 	if (leftRow2) {
-		if (board[leftRow2][currentCol] !== undefined) {
-		validMove.add(leftRow2 + (currentCol + 1));
+		if(isVaildTile(leftRow2, (currentCol), board, isWhite)) {
+			validMove.add(leftRow2 + (currentCol + 1));
 		}
-		if (board[leftRow2][currentCol - 2] !== undefined) {
+		if(isVaildTile(leftRow2, (currentCol - 2), board, isWhite)) {
 			validMove.add(leftRow2 + (currentCol - 1));
 		}
 	}
+
 	if (rightRow) {
-		if (board[rightRow][currentCol + 1] !== undefined) {
-		validMove.add(rightRow + (currentCol + 2));
+		if(isVaildTile(rightRow, (currentCol + 1), board, isWhite)) {
+			validMove.add(rightRow + (currentCol + 2));
 		}
-		if (board[rightRow][currentCol - 3] !== undefined) {
+		if(isVaildTile(rightRow, (currentCol - 3), board, isWhite)) {
 			validMove.add(rightRow + (currentCol - 2));
 		}
 	}
-	if (rightRow2) {		
-		if (board[rightRow2][currentCol] !== undefined) {
+	if (rightRow2) {	
+		if(isVaildTile(rightRow2, (currentCol), board, isWhite)) {
 			validMove.add(rightRow2 + (currentCol + 1));
 		}
-		if (board[rightRow2][currentCol - 2] !== undefined) {
+		if(isVaildTile(rightRow2, (currentCol - 2), board, isWhite)) {
 			validMove.add(rightRow2 + (currentCol - 1));
 		}
 	}
@@ -140,114 +161,35 @@ function kingValidMove(loc, isWhite, board) {
 	let rightRow = getNextRow(currentRow);
 
 	if (leftRow) {
-		if (board[leftRow][currentCol - 2] !== undefined) {
-			if (board[leftRow][currentCol - 2] !== null) {
-				if (board[leftRow][currentCol - 2][0] === 'b' && isWhite) {
-					validMove.add(leftRow + (currentCol - 1));
-				}
-				else if (board[leftRow][currentCol - 2][0] === 'w' && !isWhite) {
-					validMove.add(leftRow + (currentCol - 1));
-				}
-			}
-			else {
-				validMove.add(leftRow + (currentCol - 1));
-			}
+		if (isVaildTile(leftRow, currentCol - 2, board, isWhite)) {
+			validMove.add(leftRow + (currentCol - 1));
 		}
-		if (board[leftRow][currentCol - 1] !== undefined) {
-			if (board[leftRow][currentCol - 1] !== null) {
-				if (board[leftRow][currentCol - 1][0] === 'b' && isWhite) {
-					validMove.add(leftRow + (currentCol));
-				}
-				else if (board[leftRow][currentCol - 1][0] === 'w' && !isWhite) {
-					validMove.add(leftRow + (currentCol));
-				}
-			}
-			else {
-				validMove.add(leftRow + (currentCol));
-			}
+		if (isVaildTile(leftRow, currentCol - 1, board, isWhite)) {
+			validMove.add(leftRow + (currentCol));
 		}
-		if (board[leftRow][currentCol] !== undefined) {
-			if (board[leftRow][currentCol] !== null) {
-				if (board[leftRow][currentCol][0] === 'b' && isWhite) {
-					validMove.add(leftRow + (currentCol + 1));
-				}
-				else if (board[leftRow][currentCol][0] === 'w' && !isWhite) {
-					validMove.add(leftRow + (currentCol + 1));
-				}
-			}
-			else {
-				validMove.add(leftRow + (currentCol + 1));
-			}
+		if (isVaildTile(leftRow, currentCol, board, isWhite)) {
+			validMove.add(leftRow + (currentCol + 1));
 		}
+		
 	}
 	if (rightRow) {
-		if (board[rightRow][currentCol - 2] !== undefined) {
-			if (board[rightRow][currentCol - 2] !== null) {
-				if (board[rightRow][currentCol - 2][0] === 'b' && isWhite) {
-					validMove.add(rightRow + (currentCol - 1));
-				}
-				else if (board[rightRow][currentCol - 2][0] === 'w' && !isWhite) {
-					validMove.add(rightRow + (currentCol - 1));
-				}
-			}
-			else {
-				validMove.add(rightRow + (currentCol - 1));
-			}
+		if (isVaildTile(rightRow, currentCol - 2, board, isWhite)) {
+			validMove.add(rightRow + (currentCol - 1));
 		}
-		if (board[rightRow][currentCol - 1] !== undefined) {
-			if (board[rightRow][currentCol - 1] !== null) {
-				if (board[rightRow][currentCol - 1][0] === 'b' && isWhite) {
-					validMove.add(rightRow + (currentCol));
-				}
-				else if (board[rightRow][currentCol - 1][0] === 'w' && !isWhite) {
-					validMove.add(rightRow + (currentCol));
-				}
-			}
-			else {
-				validMove.add(rightRow + (currentCol));
-			}
+		if (isVaildTile(rightRow, currentCol - 1, board, isWhite)) {
+			validMove.add(rightRow + (currentCol));
 		}
-		if (board[rightRow][currentCol] !== undefined) {
-			if (board[rightRow][currentCol] !== null) {
-				if (board[rightRow][currentCol][0] === 'b' && isWhite) {
-					validMove.add(rightRow + (currentCol + 1));
-				}
-				else if (board[rightRow][currentCol][0] === 'w' && !isWhite) {
-					validMove.add(rightRow + (currentCol + 1));
-				}
-			}
-			else {
-				validMove.add(rightRow + (currentCol + 1));
-			}
+		if (isVaildTile(rightRow, currentCol, board, isWhite)) {
+			validMove.add(rightRow + (currentCol + 1));
 		}
+	}
+	if (isVaildTile(currentRow, currentCol - 2, board, isWhite)) {
+		validMove.add(currentRow + (currentCol - 1));
+	}
+	if (isVaildTile(currentRow, currentCol, board, isWhite)) {
+		validMove.add(currentRow + (currentCol + 1));
 	}
 
-	if (board[currentRow][currentCol - 2] !== undefined) {
-		if (board[currentRow][currentCol - 2] !== null) {
-				if (board[currentRow][currentCol - 2][0] === 'b' && isWhite) {
-					validMove.add(currentRow + (currentCol - 1));
-				}
-				else if (board[currentRow][currentCol - 2][0] === 'w' && !isWhite) {
-					validMove.add(currentRow + (currentCol - 1));
-				}
-		}
-		else {
-			validMove.add(currentRow + (currentCol - 1));
-		}
-	}
-	if (board[currentRow][currentCol] !== undefined) {
-		if (board[currentRow][currentCol] !== null) {
-				if (board[currentRow][currentCol][0] === 'b' && isWhite) {
-					validMove.add(currentRow + (currentCol + 1));
-				}
-				else if (board[currentRow][currentCol][0] === 'w' && !isWhite) {
-					validMove.add(currentRow + (currentCol + 1));
-				}
-		}
-		else {
-			validMove.add(currentRow + (currentCol + 1));
-		}
-	}
 	return validMove;
 } 
 
@@ -255,227 +197,134 @@ function rockValidMove(loc, isWhite, board) {
 	let validMove = new Set();
 	let currentRow = loc[0];
 	let currentCol = parseInt(loc[1]);
-	let validRow = [];
-	let validCol = [];
+
 	let interateRow = getPreRow(currentRow);
-	let iterateCol = currentCol - 2;
 	while(interateRow) {
-		if (board[interateRow][currentCol - 1] !== null) {
-			if (board[interateRow][currentCol - 1][0] === 'b' && isWhite) {
-				validRow.push(interateRow);
-				break;
-			}
-			else if (board[interateRow][currentCol - 1][0] === 'w' && !isWhite) {
-				validRow.push(interateRow);
-				break;
-			}
-			else {
+		if (isVaildTile(interateRow, currentCol - 1, board, isWhite)) {
+			validMove.add(interateRow + currentCol);
+			if (board[interateRow][currentCol - 1] !== null) {
 				break;
 			}
 		}
 		else {
-			validRow.push(interateRow);
+			break;
 		}
 		interateRow = getPreRow(interateRow);
 	}
 	interateRow = getNextRow(currentRow);
 	while(interateRow) {
-		if (board[interateRow][currentCol - 1] !== null) {
-			if (board[interateRow][currentCol - 1][0] === 'b' && isWhite) {
-				validRow.push(interateRow);
-				break;
-			}
-			else if (board[interateRow][currentCol - 1][0] === 'w' && !isWhite) {
-				validRow.push(interateRow);
-				break;
-			}
-			else {
+		if (isVaildTile(interateRow, currentCol - 1, board, isWhite)) {
+			validMove.add(interateRow + currentCol);
+			if (board[interateRow][currentCol - 1] !== null) {
 				break;
 			}
 		}
 		else {
-			validRow.push(interateRow);
+			break;
 		}
 		interateRow = getNextRow(interateRow);
 	}
+
 	// check down direction
+	let iterateCol = currentCol - 2;
 	while(iterateCol >= 0) {
-		if (board[currentRow][iterateCol] !== null) {
-			if (board[currentRow][iterateCol][0] === 'b' && isWhite) {
-				validCol.push(iterateCol+1);
-				break;
-			}
-			else if (board[currentRow][iterateCol][0] === 'w' && !isWhite) {
-				validCol.push(iterateCol+1);
-				break;
-			}
-			else {
+		if (isVaildTile(currentRow, iterateCol, board, isWhite)) {
+			validMove.add(currentRow + (iterateCol + 1));
+			if (board[currentRow][iterateCol] !== null) {
 				break;
 			}
 		}
 		else {
-			validCol.push(iterateCol+1);
+			break;
 		}
 		iterateCol = (iterateCol - 1);
 	}
-	// check down direction
+	// check up direction
 	iterateCol = currentCol;
 	while(iterateCol <= 7) {
-		if (board[currentRow][iterateCol] !== null) {
-			if (board[currentRow][iterateCol][0] === 'b' && isWhite) {
-				validCol.push(iterateCol+1);
-				break;
-			}
-			else if (board[currentRow][iterateCol][0] === 'w' && !isWhite) {
-				validCol.push(iterateCol+1);
-				break;
-			}
-			else {
+		if (isVaildTile(currentRow, iterateCol, board, isWhite)) {
+			validMove.add(currentRow + (iterateCol + 1));
+			if (board[currentRow][iterateCol] !== null) {
 				break;
 			}
 		}
 		else {
-			validCol.push(iterateCol+1);
+			break;
 		}
 		iterateCol = (iterateCol + 1);
 	}
 
-	validRow.map((row) => {
-		validMove.add(row + currentCol);
-	});
-	validCol.map((col) => {
-		validMove.add(currentRow + col);
-	})
 	return validMove;
 } 
 
 function bishopValidMove(loc, isWhite, board) {
 	let validMove = new Set();
 	let currentRow = loc[0];
-	let currentCol = parseInt(loc[1]);;
+	let currentCol = parseInt(loc[1]);
+
 	let interateRow = getPreRow(currentRow);
 	let iterateCol = 1;
 	let stopUpSide = false;
 	let stopDownSide = false;
-
 	while(interateRow) {
 		if(!stopUpSide) {
 			//null , undefined, or piece
 			//case 1. undefined
-			let leftUpPiece = board[interateRow][currentCol - 1 + iterateCol]
-			if (leftUpPiece === undefined) {
-				stopUpSide = true;
-			}
-			//case 2, piece
-			else if (leftUpPiece !== null) {
-				if (leftUpPiece[0] === 'b' && isWhite) {
-					validMove.add(interateRow + (currentCol + iterateCol));
-					stopUpSide = true;
-				}
-				else if (leftUpPiece[0] === 'w' && !isWhite) {
-					validMove.add(interateRow + (currentCol + iterateCol));
-					stopUpSide = true;
-				}
-				else {
-					stopUpSide = true;;
-				}
-			}
-			//case 3, null = empty tile
-			else {
+			if (isVaildTile(interateRow, currentCol - 1 + iterateCol, board, isWhite)) {
 				validMove.add(interateRow + (currentCol + iterateCol));
+				if (board[interateRow][currentCol - 1 + iterateCol] !== null) {
+					stopUpSide = true;
+				}
+			}
+			else {
+				stopUpSide = true;;
 			}
 		}
 		if(!stopDownSide) {
-			//null , undefined, or piece
-			//case 1. undefined
-			let leftDownPiece = board[interateRow][currentCol - 1 - iterateCol]
-
-			if (leftDownPiece === undefined) {
-				stopDownSide = true;
-			}
-			//case 2, piece
-			else if (leftDownPiece !== null) {
-				if (leftDownPiece[0] === 'b' && isWhite) {
-					validMove.add(interateRow + (currentCol - iterateCol));
-					stopDownSide = true;
-				}
-				else if (leftDownPiece[0] === 'w' && !isWhite) {
-					validMove.add(interateRow + (currentCol - iterateCol));
-					stopDownSide = true;
-				}
-				else {
-					stopDownSide = true;;
-				}
-			}
-			//case 3, null = empty tile
-			else {
+			if (isVaildTile(interateRow, currentCol - 1 - iterateCol, board, isWhite)) {
 				validMove.add(interateRow + (currentCol - iterateCol));
+				if (board[interateRow][currentCol - 1 - iterateCol] !== null) {
+					stopDownSide = true;
+				}
+			}
+			else {
+				stopDownSide = true;;
 			}
 		}
 		interateRow = getPreRow(interateRow);
 		iterateCol = iterateCol + 1;
 	}
-
+	
+	interateRow = getNextRow(currentRow);
+ 	iterateCol = 1;
 	stopUpSide = false;
  	stopDownSide = false;
- 	interateRow = getNextRow(currentRow);
- 	iterateCol = 1;
-
 	while(interateRow) {
 		if(!stopUpSide) {
 			//null , undefined, or piece
 			//case 1. undefined
-			let leftUpPiece = board[interateRow][currentCol - 1 + iterateCol]
-			if (leftUpPiece === undefined) {
-				stopUpSide = true;
-			}
-			//case 2, piece
-			else if (leftUpPiece !== null) {
-				if (leftUpPiece[0] === 'b' && isWhite) {
-					validMove.add(interateRow + (currentCol + iterateCol));
-					stopUpSide = true;
-				}
-				else if (leftUpPiece[0] === 'w' && !isWhite) {
-					validMove.add(interateRow + (currentCol + iterateCol));
-					stopUpSide = true;
-				}
-				else {
-					stopUpSide = true;;
-				}
-			}
-			//case 3, null = empty tile
-			else {
+			if (isVaildTile(interateRow, currentCol - 1 + iterateCol, board, isWhite)) {
 				validMove.add(interateRow + (currentCol + iterateCol));
+				if (board[interateRow][currentCol - 1 + iterateCol] !== null) {
+					stopUpSide = true;
+				}
+			}
+			else {
+				stopUpSide = true;;
 			}
 		}
 		if(!stopDownSide) {
-			//null , undefined, or piece
-			//case 1. undefined
-			let leftDownPiece = board[interateRow][currentCol - 1 - iterateCol]
-
-			if (leftDownPiece === undefined) {
-				stopDownSide = true;
-			}
-			//case 2, piece
-			else if (leftDownPiece !== null) {
-				if (leftDownPiece[0] === 'b' && isWhite) {
-					validMove.add(interateRow + (currentCol - iterateCol));
-					stopDownSide = true;
-				}
-				else if (leftDownPiece[0] === 'w' && !isWhite) {
-					validMove.add(interateRow + (currentCol - iterateCol));
-					stopDownSide = true;
-				}
-				else {
-					stopDownSide = true;;
-				}
-			}
-			//case 3, null = empty tile
-			else {
+			if (isVaildTile(interateRow, currentCol - 1 - iterateCol, board, isWhite)) {
 				validMove.add(interateRow + (currentCol - iterateCol));
+				if (board[interateRow][currentCol - 1 - iterateCol] !== null) {
+					stopDownSide = true;
+				}
+			}
+			else {
+				stopDownSide = true;;
 			}
 		}
- 		interateRow = getNextRow(interateRow);
+		interateRow = getNextRow(interateRow);
 		iterateCol = iterateCol + 1;
 	}
 	return validMove;
