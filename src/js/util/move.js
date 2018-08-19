@@ -8,6 +8,13 @@ function getPreRow(character) {
     return (character == 'A' || character == '' ? '' : String.fromCharCode(character.charCodeAt(0) - 1));
 }
 
+//refractor checking piece in following order
+//check undefined => stop
+//check opposite piece => add then stop
+//check same piece => stop
+//check null => add then next
+
+
 function pawnValidMoves(loc, isWhite, board) {
 	let validMove = new Set();
 	let currentRow = loc[0];
@@ -28,12 +35,22 @@ function pawnValidMoves(loc, isWhite, board) {
 		
 		if (leftRow) {
 			if (board[leftRow][currentCol] !== null) {
-				validMove.add(leftRow + (currentCol + 1));
+				if (board[leftRow][currentCol][0] === 'b' && isWhite) {
+					validMove.add(leftRow + (currentCol + 1));
+				}
+				else if (board[leftRow][currentCol][0] === 'w' && !isWhite) {
+					validMove.add(leftRow + (currentCol + 1));
+				}
 			}
 		}
 		if (rightRow) {
 			if (board[rightRow][currentCol] !== null) {
-				validMove.add(rightRow + (currentCol + 1));
+				if (board[rightRow][currentCol][0] === 'b' && isWhite) {
+					validMove.add(rightRow + (currentCol + 1));
+				}
+				else if (board[rightRow][currentCol][0] === 'w' && !isWhite) {
+					validMove.add(rightRow + (currentCol + 1));
+				}
 			}
 		}
 	}
@@ -47,12 +64,22 @@ function pawnValidMoves(loc, isWhite, board) {
 		
 		if (leftRow) {
 			if (board[leftRow][currentCol - 2] !== null) {
-				validMove.add(leftRow + (currentCol - 1));
+				if (board[leftRow][currentCol - 2][0] === 'b' && isWhite) {
+					validMove.add(leftRow + (currentCol - 1));
+				}
+				else if (board[leftRow][currentCol - 2][0] === 'w' && !isWhite) {
+					validMove.add(leftRow + (currentCol - 1));
+				}
 			}
 		}
 		if (rightRow) {
 			if (board[rightRow][currentCol - 2] !== null) {
-				validMove.add(rightRow + (currentCol - 1));
+				if (board[rightRow][currentCol - 2][0] === 'b' && isWhite) {
+					validMove.add(rightRow + (currentCol - 1));
+				}
+				else if (board[rightRow][currentCol - 2][0] === 'w' && !isWhite) {
+					validMove.add(rightRow + (currentCol - 1));
+				}
 			}
 		}
 	}

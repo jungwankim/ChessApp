@@ -15,7 +15,10 @@ export default class Tile extends React.Component {
 			piece = <Piece player = {player} piece = {type} clickHandle={this.props.clickHandler.pieceClick}/>;
 		}
 		const getClass = (display) => {
-			return (display ? 'tile posTile' : 'tile');			
+			if (piece) {
+				return (display ? 'tile enemyPosTile' : 'tile');		
+			}
+			return (display ? 'tile posTile' : 'tile');		
 		}
 
 		return (

@@ -11,6 +11,10 @@ svg {
     height: 50px;
 }
 
+h3 {
+    margin-top: 50px;
+}
+
 .row {
     display:  flex;
     flex-direction: column-reverse;
@@ -27,6 +31,10 @@ svg {
     box-shadow: 0px 0px 16px 0px inset;
 }
 
+.enemyPosTile {
+    background: red !important;
+    box-shadow: 0px 0px 16px 0px inset;
+}
 .row:nth-child(2n+1) .tile:nth-child(2n+1) {
 	background: $chessBoardDark;
 }
@@ -69,3 +77,82 @@ svg {
     width: 50px;
     height: 50px;
 }
+
+%bottom-legend {
+    position: absolute;
+    margin-top: 25px;
+    margin-left: 18px;
+}
+
+%left-legend {
+    margin-left:-25px;
+    position:absolute;
+    margin-top:20px;
+}
+
+.row.A::after {
+    @extend %bottom-legend ;
+    content: 'A';
+}
+.row.B::after {
+    @extend %bottom-legend ;
+    content: 'B';
+}
+.row.C::after {
+    @extend %bottom-legend ;
+    content: 'C';
+}
+.row.D::after {
+    @extend %bottom-legend ;
+    content: 'D';
+}
+.row.E::after {
+    @extend %bottom-legend ;
+    content: 'E';
+}
+.row.F::after {
+    @extend %bottom-legend ;
+    content: 'F';
+}
+.row.G::after {
+    @extend %bottom-legend ;
+    content: 'G';
+}
+.row.H::after {
+    @extend %bottom-legend ;
+    content: 'H';
+}
+
+.row.A .tile:nth-child(1)::before {
+    @extend %left-legend ;
+    content: '1';
+}
+.row.A .tile:nth-child(2)::before {
+    @extend %left-legend ;
+    content: '2';
+}
+.row.A .tile:nth-child(3)::before {
+    @extend %left-legend ;
+    content: '3';
+}
+.row.A .tile:nth-child(4)::before {
+    @extend %left-legend ;
+    content: '4';
+}
+.row.A .tile:nth-child(5)::before {
+    @extend %left-legend ;
+    content: '5';
+}
+.row.A .tile:nth-child(6)::before {
+    @extend %left-legend ;
+    content: '6';
+}
+.row.A .tile:nth-child(7)::before {
+    @extend %left-legend ;
+    content: '7';
+}
+.row.A .tile:nth-child(8)::before {
+    @extend %left-legend ;
+    content: '8';
+}
+
